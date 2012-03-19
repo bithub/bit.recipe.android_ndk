@@ -22,15 +22,20 @@ class Recipe:
                     'NDK': self.options['ndk'],
                     'PARTNAME': self.name,
                     }
-        bash = '#/bin/bash\n'
+        bash = '#!/bin/bash\n'
         bash += '\n'.join(['%s=%s' % (k, v)
                           for k, v in env_vars.items()])
         open(target_install, 'w').write(bash + open(install).read())
         commands.getoutput('chmod +x %s' % target_install)
 
+    def _install(self):
+        print commands.getoutput('./bin/%s install' % self.name)
+
     def install(self):
         self._update()
+        self._install()
         return ['bin/%s' % self.name]
 
     def update(self):
+        self._install()
         self._update()
